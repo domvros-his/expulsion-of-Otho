@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>Η εξουσία αλλάζει χέρια. Η έξωση του Όθωνα</title>
+  <style>
+    :root{
+      --brick:#9d4935;
+      --brick-dark:#713126;
+      --brick-light:#c77458;
+      --cream:#f5ede3;
+      --cream-2:#fffaf4;
+      --ink:#3c2c28;
+      --ink-2:#5a4540;
+      --muted:#756762;
+      --gold:#b78a45;
+      --line:#d8c6b8;
+      --ok:#3e7355;
+      --danger:#a33f36;
+      --shadow:0 15px 38px rgba(87,49,39,.12);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--cream);line-height:1.62}
+    button,input,textarea,select{font:inherit} button{cursor:pointer} a{color:inherit}
+    .topline{background:var(--brick-dark);color:#fff;font-size:.79rem;letter-spacing:.08em;padding:.65rem 1rem;text-align:center;font-weight:750}
+    .app-shell{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;padding:1.05rem;background:linear-gradient(180deg,var(--brick-dark),#58251e);color:#fff;display:flex;flex-direction:column;gap:1rem;overflow:auto;z-index:20}
+    .brand{padding:.55rem .45rem 1rem;border-bottom:1px solid rgba(255,255,255,.18)}
+    .brand-kicker{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:#efd2be}
+    .brand h1{font-family:Georgia,"Times New Roman",serif;font-size:1.45rem;line-height:1.12;margin:.45rem 0 .35rem}
+    .brand p{margin:0;color:#f5e9e3;font-size:.86rem}
+    .progress-wrap{padding:.15rem .45rem}
+    .progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:#f3dfd5;margin-bottom:.4rem}
+    .progress-track{height:8px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}
+    .progress-bar{height:100%;width:0;background:linear-gradient(90deg,#e7b28f,#f2d28c);transition:width .3s ease}
+    .nav{display:grid;gap:.42rem}
+    .nav button{width:100%;border:0;border-radius:14px;background:transparent;color:#f2e6e0;text-align:left;padding:.72rem .75rem;display:grid;grid-template-columns:32px 1fr;align-items:center;gap:.55rem;transition:.2s ease}
+    .nav button:hover,.nav button.active{background:rgba(255,255,255,.13);color:#fff;transform:translateX(2px)}
+    .nav .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.32);font-size:.76rem}
+    .nav button.done .num{background:var(--ok);border-color:var(--ok)}
+    .sidebar-actions{margin-top:auto;display:grid;gap:.55rem}
+    .small-btn{border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:12px;padding:.65rem .75rem}
+    .small-btn:hover{background:rgba(255,255,255,.1)}
+    .saved-note{font-size:.77rem;color:#efd9ce;text-align:center;min-height:1.2em}
+    main{min-width:0}
+    .hero{position:relative;overflow:hidden;padding:3.4rem clamp(1.25rem,5vw,5.5rem) 2.8rem;background:linear-gradient(135deg,#fffaf4,#ead9cc);border-bottom:1px solid var(--line)}
+    .hero:after{content:"1862";position:absolute;right:-.04em;bottom:-.34em;font-family:Georgia,serif;font-size:clamp(9rem,24vw,22rem);font-weight:700;color:rgba(157,73,53,.07);pointer-events:none}
+    .eyebrow{font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brick)}
+    .hero h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.35rem,3vw,3.3rem);line-height:1.04;margin:.7rem 0 1rem;max-width:850px}
+    .hero .lead{font-size:clamp(.98rem,1.55vw,1.16rem);max-width:860px;color:var(--ink-2)}
+    .mission-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1.8rem;max-width:980px}
+    .mission-chip{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:15px;padding:.85rem}
+    .mission-chip strong{display:block;color:var(--brick);font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}
+    .main-content{padding:2rem clamp(1rem,4vw,4.4rem) 5rem}
+    .panel{display:none;animation:fade .22s ease} .panel.active{display:block}
+    @keyframes fade{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .section-head{margin-bottom:1.15rem}
+    .section-head h3{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.7rem,3vw,2.75rem);line-height:1.1;margin:.25rem 0}
+    .section-head p{max-width:820px;margin:.45rem 0 0;color:var(--muted)}
+    .step-badge{display:inline-block;border:1px solid var(--brick);color:var(--brick);padding:.34rem .68rem;border-radius:999px;font-weight:800;font-size:.8rem}
+    .instruction{border-left:5px solid var(--brick-light);background:#fff7ee;border-radius:0 15px 15px 0;padding:1rem 1.15rem;margin:1rem 0 1.35rem}
+    .instruction strong{color:var(--brick-dark)}
+    .guide-box{background:#f1dfd4;border:1px solid #d9b7a6;border-radius:16px;padding:1rem 1.1rem;margin:1rem 0}
+    .guide-box strong{color:var(--brick-dark)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.15rem}
+    .card{background:rgba(255,250,244,.96);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem}
+    .card h4{font-family:Georgia,"Times New Roman",serif;font-size:1.3rem;margin:.1rem 0 .65rem}
+    .card h5{font-size:1rem;margin:.2rem 0 .45rem}
+    .simple-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin:1.2rem 0}
+    .simple-step{background:#fff;border:1px solid var(--line);border-top:5px solid var(--brick);border-radius:16px;padding:1rem}
+    .simple-step .big-num{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:var(--brick);color:#fff;font-weight:900;margin-bottom:.55rem}
+    .simple-step h4{font-family:Georgia,serif;margin:.1rem 0 .4rem}
+    .meta-row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+    .tag{display:inline-flex;padding:.32rem .62rem;border-radius:999px;background:#eadbd0;color:var(--ink-2);font-size:.78rem;font-weight:750}
+    .source-image{width:100%;display:block;border-radius:15px;border:1px solid #cdb7aa;background:#ddd;max-height:650px;object-fit:contain}
+    .caption{font-size:.78rem;color:var(--muted);margin:.55rem .2rem 0}
+    details{border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.7);margin:.75rem 0}
+    summary{font-weight:800;padding:.85rem 1rem;cursor:pointer;color:var(--ink-2)}
+    details .detail-body{padding:0 1rem 1rem}
+    .source-text{font-family:Georgia,"Times New Roman",serif;font-size:1.02rem;background:#fff;border-left:4px solid var(--brick);padding:1rem 1.1rem;border-radius:0 14px 14px 0;white-space:pre-line}
+    .word-help{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.8rem 0 1.1rem}
+    .word-help div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:.75rem}
+    .word-help strong{display:block;color:var(--brick)}
+    .question-list{display:grid;gap:.8rem}
+    .guided-question{background:#fff;border:1px solid var(--line);border-radius:15px;padding:.9rem}
+    .guided-question.correct{border-color:var(--ok);box-shadow:0 0 0 3px rgba(62,115,85,.12)}
+    .guided-question.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(163,63,54,.1)}
+    label{font-weight:730;font-size:.91rem;color:var(--ink-2)}
+    select,input[type="text"],textarea{width:100%;border:1px solid #cab7aa;border-radius:12px;background:#fffdf9;color:var(--ink);padding:.78rem .85rem;outline:none}
+    textarea{min-height:105px;resize:vertical}
+    select:focus,input:focus,textarea:focus{border-color:var(--brick);box-shadow:0 0 0 3px rgba(157,73,53,.13)}
+    .feedback{font-size:.84rem;min-height:1.3em;margin-top:.42rem;font-weight:750}
+    .feedback.ok{color:var(--ok)} .feedback.no{color:var(--danger)}
+    .flow-diagram{display:grid;grid-template-columns:1fr 64px 1fr 64px 1fr;align-items:stretch;gap:.35rem;margin:1.2rem 0}
+    .flow-node{background:#fff;border:1px solid var(--line);border-top:6px solid var(--brick);border-radius:17px;padding:1rem;min-height:145px}
+    .flow-node:nth-child(3){border-top-color:var(--brick-light)} .flow-node:nth-child(5){border-top-color:var(--gold)}
+    .flow-node .time{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:800}
+    .flow-node h4{font-family:Georgia,serif;margin:.35rem 0 .55rem;font-size:1.28rem}
+    .arrow{display:grid;place-items:center;color:var(--brick);font-size:2rem;font-weight:900}
+    .timeline{display:flex;align-items:flex-start;overflow:auto;padding:.5rem 0 1rem}
+    .timeline-item{min-width:210px;position:relative;padding:2rem .8rem 0;border-top:3px solid var(--brick-dark)}
+    .timeline-item:before{content:"";position:absolute;top:-8px;left:12px;width:13px;height:13px;border-radius:50%;background:var(--brick);border:2px solid var(--cream)}
+    .timeline-item time{display:block;font-weight:850;color:var(--brick);font-size:.84rem}
+    .timeline-item span{font-size:.86rem;color:var(--ink-2)}
+    .compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:1rem 0}
+    .compare-card{background:#fff;border:1px solid var(--line);border-top:5px solid var(--brick-light);border-radius:16px;padding:.95rem}
+    .compare-card h4{font-size:1.12rem;margin:.1rem 0 .45rem}
+    .sentence-frame{background:#fff5ea;border:1px dashed #c79a80;border-radius:14px;padding:.9rem;margin:.8rem 0}
+    .sentence-frame strong{color:var(--brick-dark)}
+    .btn-row{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem}
+    .btn{border:0;border-radius:12px;padding:.78rem 1rem;font-weight:800;background:var(--brick);color:#fff;box-shadow:0 8px 18px rgba(113,49,38,.2)}
+    .btn:hover{filter:brightness(.96);transform:translateY(-1px)} .btn.secondary{background:var(--brick-dark)} .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .synthesis-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem} .synthesis-grid .full{grid-column:1/-1}
+    .report-preview{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.2rem;margin-top:1.2rem}
+    .report-preview h4{font-size:1.45rem} .report-field{border-bottom:1px dashed #bda89a;padding:.62rem 0}
+    .full-source-part{margin-bottom:1rem} .full-source-part h5{font-family:Georgia,serif;font-size:1.1rem;margin:.2rem 0 .45rem}
+    .credits-list{display:grid;gap:.72rem} .credit{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.85rem} .credit strong{display:block;color:var(--brick)}
+    footer{background:var(--brick-dark);color:#f5e8e1;padding:1.35rem clamp(1rem,4vw,4.4rem);font-size:.84rem}
+    .mobile-top{display:none;position:sticky;top:0;z-index:40;background:var(--brick-dark);color:#fff;padding:.65rem .8rem;align-items:center;justify-content:space-between}
+    .mobile-top button{border:1px solid rgba(255,255,255,.3);color:#fff;background:transparent;border-radius:10px;padding:.45rem .7rem}
+    @media(max-width:1000px){.app-shell{grid-template-columns:225px minmax(0,1fr)}.simple-steps,.mission-strip{grid-template-columns:1fr 1fr}.flow-diagram{grid-template-columns:1fr 42px 1fr 42px 1fr}}
+    @media(max-width:820px){.mobile-top{display:flex}.app-shell{display:block}.sidebar{position:fixed;left:0;top:0;bottom:0;width:min(88vw,320px);height:100vh;transform:translateX(-105%);transition:.25s ease;box-shadow:20px 0 40px rgba(0,0,0,.22)}.sidebar.open{transform:none}.hero{padding-top:2.7rem}.grid-2,.synthesis-grid{grid-template-columns:1fr}.synthesis-grid .full{grid-column:auto}.flow-diagram{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:38px}.word-help,.compare-grid{grid-template-columns:1fr}}
+    @media(max-width:520px){.mission-strip,.simple-steps{grid-template-columns:1fr}.hero h2{font-size:1.65rem}.main-content{padding-inline:.8rem}.card{padding:1rem;border-radius:17px}}
+    @media print{body{background:#fff}.topline,.mobile-top,.sidebar,.hero,.section-head,.instruction,.guide-box,.btn-row,footer,.no-print{display:none!important}.app-shell{display:block}.main-content{padding:0}.panel{display:none!important}#panel-answer{display:block!important}.report-preview{border:0;box-shadow:none;padding:0}.card{border:0;box-shadow:none;padding:0}textarea,input,select{border:0;padding:0;background:#fff}@page{size:A4;margin:15mm}}
+  </style>
+</head>
+<body>
+  <div class="topline">ΙΣΤΟΡΙΑ Γ ΓΥΜΝΑΣΙΟΥ — 1ο ΓΥΜΝΑΣΙΟ ΠΥΛΑΙΑΣ</div>
+  <div class="mobile-top"><strong>Η εξουσία αλλάζει χέρια</strong><button id="menuBtn" aria-expanded="false">Μενού</button></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Πλοήγηση εφαρμογής">
+      <div class="brand">
+        <div class="brand-kicker">Καθοδηγούμενη ιστορική διερεύνηση</div>
+        <h1>Η εξουσία αλλάζει χέρια</h1>
+        <p>Η έξωση του Όθωνα σε τέσσερα απλά και καθοδηγούμενα βήματα.</p>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Πρόοδος</span><span id="progressText">0%</span></div>
+        <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+      <nav class="nav" id="nav">
+        <button class="active" data-target="intro"><span class="num">0</span><span>Ξεκινάμε</span></button>
+        <button data-target="source"><span class="num">1</span><span>Διαβάζω την πηγή</span></button>
+        <button data-target="change"><span class="num">2</span><span>Βλέπω την αλλαγή</span></button>
+        <button data-target="compare"><span class="num">3</span><span>Συγκρίνω πηγές</span></button>
+        <button data-target="answer"><span class="num">4</span><span>Απαντώ με στοιχεία</span></button>
+        <button data-target="credits"><span class="num">5</span><span>Συντελεστές</span></button>
+      </nav>
+      <div class="sidebar-actions">
+        <div class="saved-note" id="savedNote">Οι απαντήσεις αποθηκεύονται στη συσκευή.</div>
+        <button class="small-btn" id="printBtn">Εκτύπωση / PDF</button>
+        <button class="small-btn" id="resetBtn">Αρχικοποίηση εφαρμογής</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">Ιστορία Γ΄ Γυμνασίου · Αθήνα, Οκτώβριος 1862</div>
+        <h2>Η εξουσία αλλάζει χέρια. Η έξωση του Όθωνα</h2>
+        <p class="lead">Σε τέσσερα απλά βήματα θα διαβάσεις δύο πηγές, θα δεις σε σχεδιάγραμμα πώς μεταβιβάστηκε η εξουσία και θα γράψεις μια σύντομη απάντηση με ιστορικά στοιχεία.</p>
+        <div class="mission-strip">
+          <div class="mission-chip"><strong>1 · Διαβάζω</strong>Βρίσκω τις βασικές πληροφορίες.</div>
+          <div class="mission-chip"><strong>2 · Εντοπίζω</strong>Βλέπω ποιος χάνει και ποιος αναλαμβάνει εξουσία.</div>
+          <div class="mission-chip"><strong>3 · Συγκρίνω</strong>Καταλαβαίνω τι προσθέτει η δεύτερη πηγή.</div>
+          <div class="mission-chip"><strong>4 · Απαντώ</strong>Γράφω 4–5 προτάσεις με στοιχεία.</div>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <section class="panel active" id="panel-intro">
+          <div class="section-head"><span class="step-badge">Ξεκινάμε</span><h3>Τι θα διερευνήσουμε;</h3><p>Δεν χρειάζεται να δημιουργήσεις μόνος ή μόνη σου ένα δύσκολο ιστορικό ερώτημα. Η εφαρμογή θα σε καθοδηγήσει βήμα προς βήμα.</p></div>
+          <div class="instruction"><strong>Κεντρικό ερώτημα:</strong> Πώς οργανώθηκε η εξουσία στην Ελλάδα μετά την έξωση του Όθωνα;</div>
+          <div class="simple-steps" aria-label="Τα τέσσερα βήματα της δραστηριότητας">
+            <div class="simple-step"><div class="big-num">1</div><h4>Διαβάζω</h4><p>Βρίσκω τι καταργείται και ποιοι θεσμοί δημιουργούνται.</p></div>
+            <div class="simple-step"><div class="big-num">2</div><h4>Βλέπω</h4><p>Ακολουθώ το σχεδιάγραμμα της αλλαγής εξουσίας.</p></div>
+            <div class="simple-step"><div class="big-num">3</div><h4>Συγκρίνω</h4><p>Εντοπίζω τι εξηγεί καλύτερα η δεύτερη πηγή.</p></div>
+            <div class="simple-step"><div class="big-num">4</div><h4>Απαντώ</h4><p>Χρησιμοποιώ στοιχεία και από τις δύο πηγές.</p></div>
+          </div>
+          <div class="guide-box"><strong>Πώς δουλεύεις:</strong> Σε κάθε βήμα διάβασε πρώτα το κίτρινο ή κεραμιδί πλαίσιο με τις οδηγίες. Οι ερωτήσεις είναι σύντομες και σου δείχνουν ακριβώς τι πρέπει να προσέξεις.</div>
+          <div class="btn-row"><button class="btn next-btn" data-next="source">Πάμε στο Βήμα 1</button></div>
+        </section>
+
+        <section class="panel" id="panel-source">
+          <div class="section-head"><span class="step-badge">Βήμα 1</span><h3>Διαβάζω το «Ψήφισμα του Έθνους»</h3><p>Στόχος είναι να βρεις τρεις βασικές πληροφορίες. Δεν χρειάζεται να αναλύσεις κάθε λέξη του κειμένου.</p></div>
+          <div class="instruction"><strong>Πρόσεξε τρεις λέξεις:</strong> <em>καταργείται</em>, <em>προσωρινή</em>, <em>Συνέλευση</em>. Αυτές δείχνουν τι τελειώνει, τι ισχύει για λίγο και ποιος θα αποφασίσει για το μέλλον.</div>
+          <div class="word-help">
+            <div><strong>Καταργείται</strong>Παύει να ισχύει.</div>
+            <div><strong>Προσωρινή</strong>Ισχύει για περιορισμένο χρονικό διάστημα.</div>
+            <div><strong>Συντακτική Συνέλευση</strong>Σώμα αντιπροσώπων που αποφασίζει για το πολίτευμα.</div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <img class="source-image" src="assets/psifisma_tou_ethnous.jpg" alt="Η πρώτη σελίδα της Εφημερίδας της Κυβερνήσεως της 15ης Οκτωβρίου 1862 με το Ψήφισμα του Έθνους" />
+              <p class="caption">Εφημερίς της Κυβερνήσεως, αριθ. 1, Αθήνα, 15 Οκτωβρίου 1862. Το ψήφισμα φέρει ημερομηνία 10 Οκτωβρίου 1862.</p>
+            </div>
+            <div class="card">
+              <h4>Η πηγή σε σημερινή γλώσσα</h4>
+              <div class="meta-row"><span class="tag">Πρωτογενής πηγή</span><span class="tag">Επίσημο ψήφισμα</span><span class="tag">1862</span></div>
+              <details open><summary>Απόδοση στη σημερινή γλώσσα</summary><div class="detail-body"><div class="source-text">Τα δεινά της πατρίδας σταμάτησαν. Όλες οι επαρχίες και η πρωτεύουσα, ενωμένες με τον στρατό, έθεσαν τέλος σε αυτά.
+
+Ως κοινή απόφαση ολόκληρου του ελληνικού έθνους ανακηρύσσεται και ψηφίζεται:
+
+Καταργείται η βασιλεία του Όθωνα.
+Καταργείται η αντιβασιλεία της Αμαλίας.
+
+Συγκροτείται Προσωρινή Κυβέρνηση, για να κυβερνήσει το κράτος μέχρι να συγκληθεί η Εθνική Συνέλευση. Αποτελείται από τον Δημήτριο Βούλγαρη, ως πρόεδρο, τον Κωνσταντίνο Κανάρη και τον Μπενιζέλο Ρούφο.
+
+Καλείται αμέσως Εθνική Συντακτική Συνέλευση για τη διαμόρφωση του πολιτεύματος και την εκλογή ηγεμόνα.
+
+Ζήτω το Έθνος, ζήτω η Πατρίδα.
+
+Έγινε στην Αθήνα, στις 10 Οκτωβρίου 1862.</div></div></details>
+              <details><summary>Πρωτότυπο κείμενο</summary><div class="detail-body"><div class="source-text">Τὰ δεινὰ τῆς πατρίδος ἔπαυσαν. Ἅπασαι αἱ Ἐπαρχίαι καὶ ἡ Πρωτεύουσα συνενωθεῖσαι μετὰ τοῦ Στρατοῦ ἔθεσαν τέρμα εἰς αὐτά.
+
+Ὡς κοινὴ δὲ ἀπόφασις τοῦ Ἑλληνικοῦ Ἔθνους ὁλοκλήρου κηρύττεται καὶ ψηφίζεται.
+
+Ἡ Βασιλεία τοῦ Ὄθωνος καταργεῖται.
+Ἡ Ἀντιβασιλεία τῆς Ἀμαλίας καταργεῖται.
+
+Προσωρινὴ Κυβέρνησις συνιστᾶται ὅπως κυβερνήσῃ τὸ Κράτος μέχρι συγκλήσεως τῆς Ἐθνικῆς Συνελεύσεως, συγκειμένη ὑπὸ τῶν ἑξῆς πολιτῶν:
+
+ΔΗΜΗΤΡΙΟΥ ΒΟΥΛΓΑΡΗ, Προέδρου
+ΚΩΝΣΤΑΝΤΙΝΟΥ ΚΑΝΑΡΗ
+ΒΕΝΙΖΕΛΟΥ ΡΟΥΦΟΥ.
+
+Ἐθνικὴ Συντακτικὴ Συνέλευσις καλεῖται ἀμέσως πρὸς σύνταξιν τῆς Πολιτείας καὶ ἐκλογὴν Ἡγεμόνος.
+
+Ζήτω τὸ Ἔθνος, Ζήτω ἡ Πατρίς.
+
+Ἐγένετο ἐν Ἀθήναις ἐν ἔτει σωτηρίῳ 1862 ἐν μηνὶ Ὀκτωβρίου τῇ δεκάτῃ αὐτοῦ.</div></div></details>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1rem">
+            <h4>Βρες τις τρεις βασικές πληροφορίες</h4>
+            <div class="question-list" id="sourceQuestions">
+              <div class="guided-question" data-answer="dynasty"><label for="q1">1. Τι καταργείται;</label><select id="q1" data-save="q1"><option value="">— επίλεξε —</option><option value="dynasty">Η βασιλεία του Όθωνα και η αντιβασιλεία της Αμαλίας</option><option value="army">Ο στρατός</option><option value="assembly">Η Εθνική Συνέλευση</option></select><div class="feedback"></div></div>
+              <div class="guided-question" data-answer="temporary"><label for="q2">2. Ποιος κυβερνά προσωρινά;</label><select id="q2" data-save="q2"><option value="">— επίλεξε —</option><option value="otho">Ο Όθωνας</option><option value="temporary">Η Προσωρινή Κυβέρνηση</option><option value="assembly">Η Εθνική Συνέλευση</option></select><div class="feedback"></div></div>
+              <div class="guided-question" data-answer="assembly"><label for="q3">3. Ποιος θα αποφασίσει για το πολίτευμα και τον νέο ηγεμόνα;</label><select id="q3" data-save="q3"><option value="">— επίλεξε —</option><option value="temporary">Η Προσωρινή Κυβέρνηση</option><option value="army">Ο στρατός</option><option value="assembly">Η Εθνική Συντακτική Συνέλευση</option></select><div class="feedback"></div></div>
+            </div>
+            <div class="sentence-frame"><strong>Γράψε μία απλή πρόταση:</strong> «Με το ψήφισμα του 1862 καταργείται… και την εξουσία αναλαμβάνει προσωρινά…»</div>
+            <textarea id="sourceSummary" data-save="sourceSummary" placeholder="Συμπλήρωσε την πρόταση με δικά σου λόγια."></textarea>
+            <div class="btn-row"><button class="btn" id="checkSource">Έλεγχος απαντήσεων</button><button class="btn secondary next-btn" data-next="change">Πάμε στο Βήμα 2</button></div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-change">
+          <div class="section-head"><span class="step-badge">Βήμα 2</span><h3>Βλέπω πώς αλλάζει η εξουσία</h3><p>Το σχεδιάγραμμα δείχνει τη σειρά των γεγονότων. Διάβασέ το από αριστερά προς τα δεξιά.</p></div>
+          <div class="instruction"><strong>Γιατί το κάνουμε:</strong> Το ψήφισμα δεν λέει μόνο ότι έφυγε ο Όθωνας. Δείχνει ποιος κυβερνά αμέσως μετά και ποιος θα αποφασίσει για την επόμενη πολιτειακή μορφή.</div>
+          <div class="flow-diagram" aria-label="Σχεδιάγραμμα μεταβίβασης της εξουσίας">
+            <div class="flow-node"><div class="time">Πριν από τις 10 Οκτωβρίου</div><h4>Όθωνας και Αμαλία</h4><p>Η δυναστική τους εξουσία καταργείται.</p></div>
+            <div class="arrow">→</div>
+            <div class="flow-node"><div class="time">Αμέσως μετά</div><h4>Προσωρινή Κυβέρνηση</h4><p>Βούλγαρης, Κανάρης και Ρούφος κυβερνούν προσωρινά.</p></div>
+            <div class="arrow">→</div>
+            <div class="flow-node"><div class="time">Επόμενο στάδιο</div><h4>Εθνική Συνέλευση</h4><p>Θα διαμορφώσει την πολιτεία και θα εκλέξει ηγεμόνα.</p></div>
+          </div>
+          <div class="card">
+            <h4>Τρεις ημερομηνίες που χρειάζεσαι</h4>
+            <div class="timeline">
+              <div class="timeline-item"><time>10 Οκτωβρίου 1862</time><span>Εκδίδεται το Ψήφισμα του Έθνους.</span></div>
+              <div class="timeline-item"><time>24 Νοεμβρίου 1862</time><span>Αρχίζουν οι εκλογές για τους αντιπροσώπους.</span></div>
+              <div class="timeline-item"><time>10 Δεκεμβρίου 1862</time><span>Προβλέπεται η σύγκληση της Εθνικής Συνέλευσης.</span></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1rem">
+            <h4>Έλεγξε αν κατάλαβες το σχεδιάγραμμα</h4>
+            <div class="guided-question" data-answer="correct" id="changeQuestion"><label for="changeChoice">Ποια πρόταση περιγράφει σωστά την αλλαγή;</label><select id="changeChoice" data-save="changeChoice"><option value="">— επίλεξε —</option><option value="wrong1">Η Εθνική Συνέλευση έδιωξε την Προσωρινή Κυβέρνηση και επανέφερε τον Όθωνα.</option><option value="correct">Η δυναστεία καταργήθηκε, μια Προσωρινή Κυβέρνηση ανέλαβε και αργότερα θα αποφάσιζε η Εθνική Συνέλευση.</option><option value="wrong2">Ο στρατός κυβέρνησε μόνος του χωρίς να προβλέπεται Συνέλευση.</option></select><div class="feedback"></div></div>
+            <div class="sentence-frame"><strong>Βοήθεια για τη σκέψη σου:</strong> Η λέξη «προσωρινή» σημαίνει ότι η κυβέρνηση αυτή δεν προοριζόταν να κρατήσει μόνιμα την εξουσία.</div>
+            <label for="changeReason">Γιατί χρειαζόταν η Εθνική Συνέλευση;</label><textarea id="changeReason" data-save="changeReason" placeholder="Ξεκίνα: Η Εθνική Συνέλευση χρειαζόταν για να…"></textarea>
+            <div class="btn-row"><button class="btn" id="checkChange">Έλεγχος επιλογής</button><button class="btn secondary next-btn" data-next="compare">Πάμε στο Βήμα 3</button></div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-compare">
+          <div class="section-head"><span class="step-badge">Βήμα 3</span><h3>Συγκρίνω με τη δεύτερη πηγή</h3><p>Η δεύτερη πηγή είναι κείμενο ιστορικού. Δεν επαναλαμβάνει απλώς το ψήφισμα· εξηγεί καλύτερα ορισμένα σημεία.</p></div>
+          <div class="instruction"><strong>Διάβασε πρώτα μόνο τις τρεις κάρτες.</strong> Το πλήρες κείμενο του ιστορικού υπάρχει πιο κάτω για όποιον θέλει να το συμβουλευτεί.</div>
+          <div class="card"><div class="meta-row"><span class="tag">Δευτερογενής πηγή</span><span class="tag">Ιστορική ερμηνεία</span><span class="tag">Π. Πετρίδης, 1995</span></div><p><strong>Βιβλιογραφία:</strong> Πετρίδης Π., <em>Σύγχρονη Ελληνική Πολιτική Ιστορία, 1821–1862</em>, Γκοβόστης, Αθήνα 1995, τ. 1, σ. 222.</p></div>
+          <div class="compare-grid">
+            <div class="compare-card"><h4>1. Τι καταργήθηκε;</h4><p>Ο ιστορικός διευκρινίζει ότι δεν καταργήθηκε γενικά η μοναρχία, αλλά η συγκεκριμένη δυναστεία του Όθωνα.</p></div>
+            <div class="compare-card"><h4>2. Τι έκανε η Προσωρινή Κυβέρνηση;</h4><p>Ασκούσε προσωρινά την εκτελεστική εξουσία και θα την παρέδιδε στην Εθνική Συνέλευση.</p></div>
+            <div class="compare-card"><h4>3. Πώς οργανώθηκε η συνέχεια;</h4><p>Προκηρύχθηκαν εκλογές για αντιπροσώπους και ορίστηκε η σύγκληση της Συνέλευσης.</p></div>
+          </div>
+          <details><summary>Πλήρες απόσπασμα της δεύτερης πηγής</summary><div class="detail-body"><section class="full-source-part"><h5>Α. Τι ακριβώς καταργήθηκε;</h5><div class="source-text">«Με το παραπάνω ψήφισμα που ονομάσθηκε “Ψήφισμα του Έθνους”, γιατί προήλθε απευθείας και άμεσα από το λαό, δεν καταργήθηκε η βασιλεία, αλλά η συγκεκριμένη βασιλεία του Όθωνος. Για να γίνει μάλιστα σαφές ότι η μεταβολή αυτή δεν αφορούσε μόνο τον ίδιο αλλά και όλη τη δυναστεία, καταργήθηκε και η προβλεπόμενη από το Σύνταγμα του 1844 αντιβασιλεία της βασίλισσας Αμαλίας και ανατέθηκε η εκλογή άλλου ηγεμόνα στην εθνική “συντακτική” συνέλευση που επρόκειτο να συγκληθεί. Επομένως το συντακτικό έργο αυτής της συνελεύσεως δεσμευόταν μόνο ως προς τον τύπο του πολιτεύματος (συνταγματική μοναρχία), πράγμα που αυθεντικά επιβεβαιώθηκε από την προκήρυξη, που η προσωρινή κυβέρνηση απηύθυνε προς τον ελληνικό λαό στις 10 Νοεμβρίου 1862.»</div></section>
+<section class="full-source-part"><h5>Β. Ποια ήταν η Προσωρινή Κυβέρνηση;</h5><div class="source-text">Με το «Ψήφισμα του Έθνους» συστήθηκε τριμελής επιτροπεία με τον τίτλο «Προσωρινή Κυβέρνησις», στην οποία ανατέθηκε να «κυβερνήση το Κράτος», ωσότου συγκληθεί η Εθνική Συνέλευση. Την αποτέλεσαν ο Δημήτριος Βούλγαρης ως πρόεδρος, ο ναύαρχος Κωνσταντίνος Κανάρης και ο Μπενιζέλος Ρούφος. Από αυτούς ο Δ. Γ. Βούλγαρης ορκίσθηκε τη μέρα πού εκδόθηκε το Ψήφισμα, ενώ οι Κανάρης και Ρούφος στις 15 Οκτωβρίου. Η προσωρινή κυβέρνηση δεν πρέπει να ταυτίζεται με την έννοια του «υπουργικού συμβουλίου». Αποτελούσε το ανώτατο όργανο στο οποίο ανατέθηκε η άσκηση της εκτελεστικής λειτουργίας σε περίοδο έκτακτων περιστάσεων. Η προσωρινή κυβέρνηση υποκαθιστούσε τον ανώτατο άρχοντα ως τη «σύγκληση της Εθνικής Συνελεύσεως», δηλαδή ώσπου να συγκροτηθεί αυτή σε σώμα, στην οποία και θα παρέδιδε την εξουσία που είχε πάρει από το στρατό και το λαό μετά την εξέγερσή τους. Η πρόσκληση Εθνικής Συνελεύσεως, και μάλιστα συντακτικής, δεν αφέθηκε στην πρωτοβουλία της προσωρινής κυβερνήσεως, άλλα ήδη είχε συντελεσθεί με το ίδιο το Ψήφισμα του Έθνους. Στην προσωρινή κυβέρνηση ανατέθηκε μόνο, όπως ήταν αυτονόητο, η διαδικασία της εκτελέσεως της λαϊκής θελήσεως που είχε διατυπωθεί πανηγυρικά με το Ψήφισμα. […]</div></section>
+<section class="full-source-part"><h5>Γ. Ποια ήταν τα όρια και οι πρώτες πράξεις της;</h5><div class="source-text">Η εξουσία τής προσωρινής κυβερνήσεως δεν ήταν αδέσμευτη. Περιοριζόταν από τις διατάξεις του Συντάγματος του 1844 και από εκείνες του Ψηφίσματος του Έθνους. Εντός των ορίων αυτών μπορούσε να «κυβερνήσει» τη χώρα προσωρινά και ως τη σύγκληση της Εθνικής Συνελεύσεως. Όπως είναι αυτονόητο, συνδεδεμένη με την έκπτωση του Όθωνος και την «εθνικήν απόφασιν» γι&#x27; αυτήν ήταν και η έκδοση θεσπίσματος της προσωρινής κυβερνήσεως με το οποίο «πάσα πράξις και απόφασις, ήτις εξεδίδετο εν ονόματι του βασιλέως, θέλει του λοιπού εκδίδεσθαι εν ονόματι του Έθνους» (11 Οκτωβρίου 1862), και στη συνέχεια η έκδοση ψηφίσματος της για την κατάργηση του πολιτικού θανάτου (31 Οκτωβρίου 1862). Ας σημειωθεί ότι η προσωρινή κυβέρνηση καθιέρωσε ως εθνική εορτή την 11η Οκτωβρίου 1862 και μετονόμασε το «Πανεπιστήμιον Όθωνος» σε «Πανεπιστήμιον των Ελλήνων».</div></section>
+<section class="full-source-part"><h5>Δ. Πώς οργανώθηκε η συνέχεια;</h5><div class="source-text">Την έκδοση του ψηφίσματος του Έθνους ακολούθησε στις 14 Οκτωβρίου πάνδημη δοξολογία στην πλατεία Όθωνος (σήμερα πλατεία Ομονοίας) «διά το αίσιον και αναίμακτον πέρας του μεγάλου και ένδοξου έργου της 10ης Οκτωβρίου» και πομπώδης λόγος του Δημητρίου Βούλγαρη. Ανάλογο τόνο έλαβε και ο πανηγυρισμός που έγινε στο Πολύγωνο (τώρα πεδίο του Άρεως) στις 21 Οκτωβρίου, κατά τον οποίο, έπειτα από νέα δοξολογία, ορκίστηκε ο στρατός στο νέο καθεστώς και παρέλαβε τις νέες σημαίες του χωρίς τα διακριτικά σήματα τής βασιλείας. […]
+
+Ύστερα από λίγες μέρες η προσωρινή κυβέρνηση απηύθυνε προκήρυξη στον ελληνικό λαό, με την οποία σε εκτέλεση της «δηλωθείσης θελήσεως του Έθνους» αποφάσιζε τη σύγκληση Εθνικής Συνελεύσεως στην Αθήνα για τις 10 Δεκεμβρίου 1862, σύμφωνα με τον εκλογικό νόμο της 18ης Μαρτίου 1844, τροποποιημένο και συμπληρωμένο με το ειδικό Ψήφισμα που εκδόθηκε στις 23 Οκτωβρίου 1862. Η 24η Νοεμβρίου ορίσθηκε να είναι η μέρα ενάρξεως των εκλογών. Ο αριθμός των πληρεξουσίων που θα αποτελούσαν τη Συνέλευση θα ήταν διπλάσιος από τον αριθμό των βουλευτών στις προηγούμενες Βουλές.»</div></section></div></details>
+          <div class="card" style="margin-top:1rem">
+            <h4>Τι μάθαμε επιπλέον;</h4>
+            <div class="question-list">
+              <div class="guided-question" data-answer="monarchy" id="compareQ1"><label for="compareChoice1">1. Ποια σημαντική διευκρίνιση κάνει ο ιστορικός;</label><select id="compareChoice1" data-save="compareChoice1"><option value="">— επίλεξε —</option><option value="monarchy">Δεν καταργήθηκε κάθε μορφή μοναρχίας· καταργήθηκε η δυναστεία του Όθωνα.</option><option value="republic">Αποφασίστηκε αμέσως η εγκαθίδρυση αβασίλευτης δημοκρατίας.</option><option value="return">Αποφασίστηκε η επιστροφή του Όθωνα.</option></select><div class="feedback"></div></div>
+              <div class="guided-question" data-answer="limits" id="compareQ2"><label for="compareChoice2">2. Τι προσθέτει για την Προσωρινή Κυβέρνηση;</label><select id="compareChoice2" data-save="compareChoice2"><option value="">— επίλεξε —</option><option value="unlimited">Είχε απεριόριστη και μόνιμη εξουσία.</option><option value="limits">Η εξουσία της ήταν προσωρινή και περιοριζόταν από το Σύνταγμα και το Ψήφισμα.</option><option value="none">Δεν είχε καμία εξουσία.</option></select><div class="feedback"></div></div>
+            </div>
+            <div class="sentence-frame"><strong>Συμπλήρωσε:</strong> «Η δεύτερη πηγή με βοηθά να καταλάβω καλύτερα ότι…»</div>
+            <textarea id="compareSummary" data-save="compareSummary" placeholder="Γράψε μία ή δύο προτάσεις."></textarea>
+            <div class="btn-row"><button class="btn" id="checkCompare">Έλεγχος απαντήσεων</button><button class="btn secondary next-btn" data-next="answer">Πάμε στο Βήμα 4</button></div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-answer">
+          <div class="section-head"><span class="step-badge">Βήμα 4</span><h3>Απαντώ με ιστορικά στοιχεία</h3><p>Τώρα συνθέτεις μια σύντομη απάντηση. Δεν χρειάζεται μεγάλο κείμενο: τέσσερις ή πέντε σωστά οργανωμένες προτάσεις αρκούν.</p></div>
+          <div class="instruction"><strong>Ερώτημα:</strong> Πώς οργανώθηκε η εξουσία στην Ελλάδα μετά την έξωση του Όθωνα;</div>
+          <div class="guide-box"><strong>Χρησιμοποίησε αυτή τη σειρά:</strong> <em>Πρώτα</em> τι καταργήθηκε · <em>Έπειτα</em> ποιος κυβέρνησε προσωρινά · <em>Στη συνέχεια</em> τι θα έκανε η Εθνική Συνέλευση · <em>Τέλος</em> μία διευκρίνιση από τον ιστορικό Πετρίδη.</div>
+          <div class="card">
+            <div class="synthesis-grid">
+              <div><label for="studentName">Ονοματεπώνυμο</label><input id="studentName" type="text" data-save="studentName"></div>
+              <div><label for="studentClass">Τμήμα</label><input id="studentClass" type="text" data-save="studentClass" placeholder="π.χ. Γ4"></div>
+              <div class="full"><label for="finalAnswer">Η απάντησή μου</label><textarea id="finalAnswer" data-save="finalAnswer" style="min-height:190px" placeholder="Πρώτα… Έπειτα… Στη συνέχεια… Η δεύτερη πηγή διευκρινίζει ότι…"></textarea></div>
+              <div><label for="evidenceA">Μία φράση ή πληροφορία από το Ψήφισμα</label><textarea id="evidenceA" data-save="evidenceA" placeholder="π.χ. «Προσωρινή Κυβέρνησις συνιστάται…»"></textarea></div>
+              <div><label for="evidenceB">Μία πληροφορία από τον Πετρίδη</label><textarea id="evidenceB" data-save="evidenceB" placeholder="π.χ. Η εξουσία της Προσωρινής Κυβέρνησης ήταν περιορισμένη."></textarea></div>
+            </div>
+            <div class="btn-row no-print"><button class="btn" id="buildReport">Ενημέρωση προεπισκόπησης</button><button class="btn secondary" onclick="window.print()">Εκτύπωση / PDF</button></div>
+          </div>
+          <article class="report-preview" id="reportPreview">
+            <div class="eyebrow">Μαθητικό δελτίο · Η έξωση του Όθωνα</div>
+            <h4>Η εξουσία αλλάζει χέρια</h4>
+            <p><strong>Μαθητής/μαθήτρια:</strong> <span id="rName">—</span> · <strong>Τμήμα:</strong> <span id="rClass">—</span></p>
+            <div class="report-field"><strong>Ερώτημα:</strong> Πώς οργανώθηκε η εξουσία στην Ελλάδα μετά την έξωση του Όθωνα;</div>
+            <div class="report-field"><strong>Απάντηση:</strong> <span id="rAnswer">—</span></div>
+            <div class="report-field"><strong>Στοιχείο από το Ψήφισμα:</strong> <span id="rEvidenceA">—</span></div>
+            <div class="report-field"><strong>Στοιχείο από τον Πετρίδη:</strong> <span id="rEvidenceB">—</span></div>
+          </article>
+        </section>
+
+        <section class="panel" id="panel-credits">
+          <div class="section-head"><span class="step-badge">Συντελεστές</span><h3>Προέλευση, δημιουργοί και νέα σύλληψη</h3><p>Η εφαρμογή αποτελεί νέα, απλοποιημένη και καθοδηγούμενη παιδαγωγική διασκευή του αρχικού μαθησιακού αντικειμένου.</p></div>
+          <div class="grid-2">
+            <div class="card"><h4>Αρχικό μαθησιακό αντικείμενο</h4><p><strong>Τίτλος:</strong> «Διαμόρφωση ιστορικού ερωτήματος — Η έξωση του Όθωνα», έκδοση 1.0, 15.10.2018.</p><div class="credits-list"><div class="credit"><strong>Χαρίκλεια Ανδρεάδου</strong>Υπεύθυνη περιεχομένου · μέλος ομάδας παιδαγωγικού σχεδιασμού.</div><div class="credit"><strong>Ιωάννης Κασκαμανίδης</strong>Μέλος ομάδας παιδαγωγικού σχεδιασμού · υπεύθυνος τεχνικού σχεδιασμού · τεχνική υλοποίηση.</div><div class="credit"><strong>Αιμιλία Σαλβάνου</strong>Υπεύθυνη περιεχομένου · ειδήμων γνωστικού αντικειμένου.</div><div class="credit"><strong>Αρμόδιος Τσιβάς</strong>Συντονιστής ομάδας σχεδιασμού και ανάπτυξης · επιστημονικός υπεύθυνος παιδαγωγικού σχεδιασμού.</div></div><p>Χορηγός άδειας χρήσης και εκδότης: ΙΤΥΕ «ΔΙΟΦΑΝΤΟΣ». Αποθετήριο προέλευσης: Φωτόδεντρο Μαθησιακά Αντικείμενα.</p></div>
+            <div class="card"><h4>Νέα παιδαγωγική σύλληψη και εφαρμογή</h4><p><strong>Παναγιώτης Δόμβρος</strong><br>Εκπαιδευτικός‑Θεατρολόγος‑Επιμορφωτής ΤΠΕ, Διευθυντής 1ου Γυμνασίου Πυλαίας.</p><p>Η νέα εκδοχή μετατρέπει το υλικό σε καθοδηγούμενη ιστορική διερεύνηση τεσσάρων βημάτων: ανάγνωση της πηγής, οπτική αποτύπωση της μεταβίβασης εξουσίας, σύγκριση με ιστορική ερμηνεία και σύνθεση σύντομης τεκμηριωμένης απάντησης.</p><h4>Άδεια</h4><p>Το αρχικό υλικό διατίθεται με άδεια <strong>CC BY‑NC‑SA 4.0</strong>. Η παρούσα διασκευή διανέμεται με τους ίδιους όρους.</p></div>
+          </div>
+        </section>
+      </div>
+      <footer>Δημιουργία εφαρμογής: Παναγιώτης Δόμβρος, Εκπαιδευτικός‑Θεατρολόγος‑Επιμορφωτής ΤΠΕ, Διευθυντής 1ου Γυμνασίου Πυλαίας.</footer>
+    </main>
+  </div>
+
+  <script>
+  (() => {
+    const STORAGE_KEY = 'exosiOthonaGuided_v2';
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { state = {}; }
+    const panels = [...document.querySelectorAll('.panel')];
+    const navButtons = [...document.querySelectorAll('.nav button')];
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.getElementById('menuBtn');
+
+    function showPanel(target){
+      panels.forEach(p => p.classList.toggle('active', p.id === `panel-${target}`));
+      navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === target));
+      sidebar.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded','false');
+      window.scrollTo({top: document.querySelector('.hero').offsetHeight, behavior:'smooth'});
+    }
+    navButtons.forEach(btn => btn.addEventListener('click', () => showPanel(btn.dataset.target)));
+    document.querySelectorAll('.next-btn').forEach(btn => btn.addEventListener('click', () => showPanel(btn.dataset.next)));
+    menuBtn.addEventListener('click', () => { const open = sidebar.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(open)); });
+
+    function save(){
+      document.querySelectorAll('[data-save]').forEach(el => state[el.dataset.save] = el.value);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const note = document.getElementById('savedNote');
+      note.textContent = 'Αποθηκεύτηκε.';
+      setTimeout(() => note.textContent = 'Οι απαντήσεις αποθηκεύονται στη συσκευή.', 900);
+      updateProgress();
+    }
+    document.querySelectorAll('[data-save]').forEach(el => {
+      if (state[el.dataset.save] !== undefined) el.value = state[el.dataset.save];
+      el.addEventListener('input', save); el.addEventListener('change', save);
+    });
+
+    function markQuestion(box, value){
+      const feedback = box.querySelector('.feedback');
+      const ok = value && value === box.dataset.answer;
+      box.classList.toggle('correct', ok);
+      box.classList.toggle('wrong', Boolean(value) && !ok);
+      feedback.className = 'feedback ' + (ok ? 'ok' : value ? 'no' : '');
+      feedback.textContent = ok ? 'Σωστά.' : value ? 'Δοκίμασε ξανά και ξανακοίτα την πηγή ή το σχεδιάγραμμα.' : 'Επίλεξε πρώτα μία απάντηση.';
+      return ok;
+    }
+    document.getElementById('checkSource').addEventListener('click', () => document.querySelectorAll('#sourceQuestions .guided-question').forEach(box => markQuestion(box, box.querySelector('select').value)));
+    document.getElementById('checkChange').addEventListener('click', () => { const box=document.getElementById('changeQuestion'); markQuestion(box, document.getElementById('changeChoice').value); });
+    document.getElementById('checkCompare').addEventListener('click', () => {
+      ['compareQ1','compareQ2'].forEach(id => { const box=document.getElementById(id); markQuestion(box, box.querySelector('select').value); });
+    });
+
+    function updateReport(){
+      const val=id => (document.getElementById(id)?.value || '').trim() || '—';
+      document.getElementById('rName').textContent=val('studentName');
+      document.getElementById('rClass').textContent=val('studentClass');
+      document.getElementById('rAnswer').textContent=val('finalAnswer');
+      document.getElementById('rEvidenceA').textContent=val('evidenceA');
+      document.getElementById('rEvidenceB').textContent=val('evidenceB');
+    }
+    document.getElementById('buildReport').addEventListener('click', () => { save(); updateReport(); });
+    document.getElementById('printBtn').addEventListener('click', () => { updateReport(); window.print(); });
+
+    function updateProgress(){
+      const required=['q1','q2','q3','sourceSummary','changeChoice','changeReason','compareChoice1','compareChoice2','compareSummary','finalAnswer','evidenceA','evidenceB'];
+      const completed=required.filter(k => String(state[k] || '').trim()).length;
+      const pct=Math.round(completed/required.length*100);
+      document.getElementById('progressBar').style.width=pct+'%';
+      document.getElementById('progressText').textContent=pct+'%';
+      const groups={source:['q1','q2','q3','sourceSummary'],change:['changeChoice','changeReason'],compare:['compareChoice1','compareChoice2','compareSummary'],answer:['finalAnswer','evidenceA','evidenceB']};
+      navButtons.forEach(b => { const keys=groups[b.dataset.target]; b.classList.toggle('done', Boolean(keys && keys.every(k => String(state[k]||'').trim()))); });
+    }
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if(confirm('Να διαγραφούν όλες οι απαντήσεις και να αρχίσει η εφαρμογή από την αρχή;')){ localStorage.removeItem(STORAGE_KEY); location.reload(); }
+    });
+    updateProgress(); updateReport();
+  })();
+  </script>
+</body>
+</html>
